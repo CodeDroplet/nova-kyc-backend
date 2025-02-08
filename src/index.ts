@@ -5,7 +5,7 @@ import rootRouter from "./routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-
+import setupUploads from "./utils/setupUploads";
 dotenv.config();
 
 const app = express();
@@ -14,6 +14,11 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Setup uploads
+setupUploads();
+app.use("/uploads", express.static("uploads"));
 
 // Rate Limiting
 const limiter = rateLimit({

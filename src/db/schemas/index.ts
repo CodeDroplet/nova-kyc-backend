@@ -1,1 +1,2 @@
-export { users } from "./user";
+export { users, usersRelations } from "./user";
+export { kycRequests, kycRequestsRelations } from "./kycRequests";

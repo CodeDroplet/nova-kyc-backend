@@ -3,7 +3,6 @@ import { users, UserType } from "../db/schemas/user";
 import db from "../db";
 import { eq } from "drizzle-orm";
 import { lower } from "../utils/lower";
-
 export type SafeUserType = Omit<typeof UserType, "password">;
 
 class User {

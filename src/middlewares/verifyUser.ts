@@ -4,7 +4,7 @@ import User from "../models/User"; // Assuming you have a User model
 import { Response, NextFunction, Request } from "express";
 import { UserRole } from "../types/users";
 
-const verifyUser = (role: UserRole) => async (req: Request, res: Response, next: NextFunction) => {
+const verifyUser = (role?: UserRole) => async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -27,14 +27,14 @@ const verifyUser = (role: UserRole) => async (req: Request, res: Response, next:
       throw new ApiError("User not found", 401);
     }
 
-    if (user.role !== role) throw new ApiError("Unauthorized", 401);
+    if (role && user.role !== role) throw new ApiError("Insufficient permissions", 401);
 
     req.user = user;
 
     next();
   } catch (error) {
     if (error instanceof ApiError) {
-      next(error);
+      return next(error);
     }
     next(new ApiError("Unauthorized", 401));
   }

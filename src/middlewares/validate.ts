@@ -2,10 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
 
 const validate =
-  (schema: ObjectSchema<any>, property: "body" | "query" | "params") =>
+  (schema: ObjectSchema<any>, property?: "body" | "query" | "params") =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[property], {
+    console.log(req.body);
+    const { error } = schema.validate(property ? req[property] : req, {
       abortEarly: false,
+      allowUnknown: true,
     });
 
     if (error) {
