@@ -4,6 +4,8 @@ import db from "../db";
 import { eq } from "drizzle-orm";
 import { lower } from "../utils/lower";
 
+export type SafeUserType = Omit<typeof UserType, "password">;
+
 class User {
   static async create(
     firstName: string,
@@ -32,13 +34,13 @@ class User {
     return newUser[0];
   }
 
-  static async findOne(id: number): Promise<typeof UserType> {
+  static async findOne(id: number): Promise<SafeUserType | undefined> {
     const user = await db.query.users.findFirst({
       where: eq(users.id, id),
+      columns: {
+        password: false,
+      },
     });
-    if (!user) {
-      throw new Error("User not found");
-    }
     return user;
   }
 
@@ -48,6 +50,11 @@ class User {
     });
 
     return user;
+  }
+
+  static async findAll(): Promise<Omit<typeof UserType, "password">[]> {
+    const users = await db.query.users.findMany({ columns: { password: false } });
+    return users;
   }
 }
 

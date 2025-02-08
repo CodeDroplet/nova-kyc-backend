@@ -1,10 +1,10 @@
-import { UserType } from "../db/schemas/user";
+import { SafeUserType } from "./../models/User";
 
 declare global {
   namespace Express {
     interface Request {
       userId: number;
-      user?: typeof UserType;
+      user?: typeof SafeUserType;
     }
   }
 }
