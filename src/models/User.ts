@@ -1,8 +1,10 @@
 import { UserRole } from "../types/users";
 import { users, UserType } from "../db/schemas/user";
 import db from "../db";
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { lower } from "../utils/lower";
+import _ from "lodash";
+import { kycRequests } from "../db/schemas";
 export type SafeUserType = Omit<typeof UserType, "password">;
 
 class User {
@@ -34,13 +36,19 @@ class User {
   }
 
   static async findOne(id: number): Promise<SafeUserType | undefined> {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, id),
-      columns: {
-        password: false,
-      },
-    });
-    return user;
+    const user = await db
+      .select({
+        ..._.omit(getTableColumns(users), "password"),
+        kycRequestsStatus: kycRequests.status,
+      })
+      .from(users)
+      .leftJoin(kycRequests, eq(users.id, kycRequests.userId))
+      .where(eq(users.id, id));
+
+    if (!user.length) {
+      return undefined;
+    }
+    return user[0];
   }
 
   static async findOneByEmail(email: string): Promise<typeof UserType | undefined> {
@@ -52,8 +60,14 @@ class User {
   }
 
   static async findAll(): Promise<Omit<typeof UserType, "password">[]> {
-    const users = await db.query.users.findMany({ columns: { password: false } });
-    return users;
+    const res = await db
+      .select({
+        ..._.omit(getTableColumns(users), "password"),
+        kycRequestsStatus: kycRequests.status,
+      })
+      .from(users)
+      .leftJoin(kycRequests, eq(users.id, kycRequests.userId));
+    return res;
   }
 }
 

@@ -26,7 +26,6 @@ export const kycRequestsRelations = relations(kycRequests, ({ one }) => ({
   user: one(users, {
     fields: [kycRequests.userId],
     references: [users.id],
-    relationName: "user",
   }),
 }));
 
