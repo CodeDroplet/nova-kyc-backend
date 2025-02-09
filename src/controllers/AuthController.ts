@@ -4,6 +4,7 @@ import { formatResponse } from "../utils/formatResponse";
 import ApiError from "../utils/apiError";
 import JWTService from "../services/TokenService";
 import { hashPassword, verifyPassword } from "../utils/hashPassword";
+import _ from "lodash";
 
 class AuthController {
   static async register(req: Request, res: Response, next: any): Promise<any> {
@@ -22,7 +23,7 @@ class AuthController {
 
       const token = JWTService.signToken({ userId: user.id });
 
-      return formatResponse(res, 201, "User created successfully", { token });
+      return formatResponse(res, 201, "User created successfully", { token, user: _.omit(user, "password") });
     } catch (err: any) {
       next(err);
     }
@@ -34,17 +35,17 @@ class AuthController {
       const user = await User.findOneByEmail(email);
 
       if (!user) {
-        throw new ApiError("Invalid email or password combination {email}", 401);
+        throw new ApiError("Invalid email or password combination", 401);
       }
 
       const isValidPassword = await verifyPassword(password, user.password);
 
       if (!isValidPassword) {
-        throw new ApiError("Invalid email or password combination {password}", 401);
+        throw new ApiError("Invalid email or password combination", 401);
       }
 
       const token = JWTService.signToken({ userId: user.id });
-      return formatResponse(res, 200, "Login successful", { token });
+      return formatResponse(res, 200, "Login successful", { token, user: _.omit(user, "password") });
     } catch (err: any) {
       next(err);
     }
