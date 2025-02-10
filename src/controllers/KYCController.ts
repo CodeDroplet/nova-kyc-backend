@@ -9,11 +9,11 @@ class KYCController {
       const userId = req.user.id;
       const kycRequest = await KYCRequest.findByUserId(+userId);
 
-      if (!kycRequest.length) {
+      if (!kycRequest) {
         throw new ApiError("No Kyc request found", 404);
       }
 
-      return formatResponse(res, 200, "KYC request retrieved successfully", { kycRequest: kycRequest[0] });
+      return formatResponse(res, 200, "KYC request retrieved successfully", { kycRequest });
     } catch (err: any) {
       next(err);
     }
@@ -22,7 +22,7 @@ class KYCController {
   static async readOne(req: Request, res: Response, next: any): Promise<any> {
     try {
       const { id } = req.params;
-      const kycRequest = await KYCRequest.findOne(+id);
+      const kycRequest = await KYCRequest.findByUserId(+id);
       if (!kycRequest) {
         throw new ApiError("KYC request not found", 404);
       }
@@ -39,7 +39,7 @@ class KYCController {
 
       // Check if user already created the request
       const userRequest = await KYCRequest.findByUserId(req.user.id);
-      if (userRequest.length > 0) {
+      if (userRequest) {
         throw new ApiError("You already created a KYC request", 400);
       }
 

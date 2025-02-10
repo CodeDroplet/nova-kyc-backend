@@ -35,8 +35,9 @@ class KYCRequest {
     return kyc[0] || null;
   }
 
-  static async findByUserId(userId: number): Promise<Array<typeof KycRequestType>> {
-    return db.select().from(kycRequests).where(eq(kycRequests.userId, userId));
+  static async findByUserId(userId: number): Promise<typeof KycRequestType> {
+    const kycList = await db.select().from(kycRequests).where(eq(kycRequests.userId, userId));
+    return kycList[0];
   }
 
   static async findAll(): Promise<Array<typeof KycRequestType>> {
