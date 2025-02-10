@@ -56,6 +56,17 @@ npm run db:generate
 npm run db:migrate
 ```
 
+To seed the database with initial data:
+
+```bash
+npm run db:seed
+```
+
+This will create:
+
+- An admin user (email: admin@example.com, password: admin123)
+- Several random users for testing
+
 ### 5. Start the Server
 
 #### Development Mode
@@ -78,8 +89,5 @@ npm start
 - `npm run dev` - Starts the development server with hot-reload
 - `npm run db:generate` - Generates database migrations
 - `npm run db:migrate` - Runs database migrations
+- `npm run db:seed` - Seeds the database with initial data
 - `npm run format` - Formats code using Prettier
-
-## File Upload 📤
-
-The service automatically creates an `uploads` directory to store KYC documents. Make sure the directory has proper write permissions.
