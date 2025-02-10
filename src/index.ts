@@ -3,15 +3,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rootRouter from "./routes";
 import { errorHandler } from "./middlewares/errorHandler";
-import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import setupUploads from "./utils/setupUploads";
+import helmet from "helmet";
 dotenv.config();
 
 const app = express();
 
 // Middlewares
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
