@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "joi";
 import ApiError from "../utils/apiError";
+import AuthError from "../utils/authError";
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   // Handle Joi Validation Errors
@@ -21,6 +22,14 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
     res.status(err.statusCode).json({
       status: "error",
       type: "api_error",
+      message: err.message,
+    });
+  }
+
+  if (err instanceof AuthError) {
+    res.status(err.statusCode).json({
+      status: "error",
+      type: "auth_error",
       message: err.message,
     });
   }
