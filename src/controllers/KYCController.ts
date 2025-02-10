@@ -9,11 +9,11 @@ class KYCController {
       const userId = req.user.id;
       const kycRequest = await KYCRequest.findByUserId(+userId);
 
-      if (!kycRequest) {
+      if (!kycRequest.length) {
         throw new ApiError("No Kyc request found", 404);
       }
 
-      return formatResponse(res, 200, "KYC request retrieved successfully", { kycRequest });
+      return formatResponse(res, 200, "KYC request retrieved successfully", { kycRequest: kycRequest[0] });
     } catch (err: any) {
       next(err);
     }
