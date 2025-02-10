@@ -50,6 +50,15 @@ class AuthController {
       next(err);
     }
   }
+
+  static async me(req: Request, res: Response, next: any): Promise<any> {
+    try {
+      const user = req.user;
+      return formatResponse(res, 200, "User retrieved successfully", { user });
+    } catch (err: any) {
+      next(err);
+    }
+  }
 }
 
 export default AuthController;
